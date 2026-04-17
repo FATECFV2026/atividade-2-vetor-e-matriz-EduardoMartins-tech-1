@@ -25,178 +25,144 @@ public class App {
             opcao = scanner.nextInt();
 
             switch (opcao) {
-                case 1: {
-                    int valor;
-                    do {
-                        System.out.print("Informe um valor <= 20: ");
-                        while (!scanner.hasNextInt()) { scanner.next(); }
-                        valor = scanner.nextInt();
-                    } while (valor > 20);
-                    int[] resultado = progressaoGeometrica(valor);
-                    if (resultado != null) System.out.println(Arrays.toString(resultado));
-                    break;
-                }
-                case 2: {
-                    int valor;
-                    do {
-                        System.out.print("Informe um valor entre 1 e 100 (nao inclusos): ");
-                        while (!scanner.hasNextInt()) { scanner.next(); }
-                        valor = scanner.nextInt();
-                    } while (valor <= 1 || valor >= 100);
-                    int[] resultado = sequenciaDecrescente(valor);
-                    if (resultado != null) System.out.println(Arrays.toString(resultado));
-                    break;
-                }
-                case 3: {
-                    int valor;
-                    do {
-                        System.out.print("Informe um valor entre 1 e 1000: ");
-                        while (!scanner.hasNextInt()) { scanner.next(); }
-                        valor = scanner.nextInt();
-                    } while (valor <= 1 || valor > 1000);
-                    int[] resultado = vetorDinamico(valor);
-                    if (resultado != null) System.out.println(Arrays.toString(resultado));
-                    break;
-                }
+                case 1: System.out.println(Arrays.toString(ex01())); break;
+                case 2: System.out.println(Arrays.toString(ex02())); break;
+                case 3: System.out.println(Arrays.toString(ex03())); break;
                 case 4: {
-                    int valor;
-                    do {
-                        System.out.print("Informe um valor entre 1 e 100 (nao inclusos): ");
-                        while (!scanner.hasNextInt()) { scanner.next(); }
-                        valor = scanner.nextInt();
-                    } while (valor <= 1 || valor >= 100);
-                    int[] vetor = sequenciaCresenteComSoma(valor);
-                    if (vetor != null) {
-                        System.out.println(Arrays.toString(vetor));
-                        System.out.println("Soma: " + calcularSoma(vetor));
-                    }
+                    int[] v = ex04();
+                    System.out.println(Arrays.toString(v));
+                    System.out.println("Soma: " + calcularSoma(v));
                     break;
                 }
-                case 5: {
-                    int valor;
-                    do {
-                        System.out.print("Informe um valor entre 3 e 50: ");
-                        while (!scanner.hasNextInt()) { scanner.next(); }
-                        valor = scanner.nextInt();
-                    } while (valor <= 3 || valor > 50);
-                    int[][] matriz = matrizIncrementais(valor);
-                    if (matriz != null) {
-                        for (int[] linha : matriz) {
-                            for (int v : linha) System.out.printf("%4d ", v);
-                            System.out.println();
-                        }
-                    }
-                    break;
-                }
+                case 5: exibirMatriz(ex05()); break;
                 case 6: {
-                    int valor;
-                    do {
-                        System.out.print("Informe um valor entre 3 e 50: ");
-                        while (!scanner.hasNextInt()) { scanner.next(); }
-                        valor = scanner.nextInt();
-                    } while (valor <= 3 || valor > 50);
-                    int[][][] matrizes = operacaoEntreMatrizes(valor);
-                    if (matrizes != null) {
-                        String[] nomes = {"Matriz N", "Matriz Z", "Matriz Soma"};
-                        for (int m = 0; m < 3; m++) {
-                            System.out.println(nomes[m] + ":");
-                            for (int[] linha : matrizes[m]) {
-                                for (int v : linha) System.out.printf("%4d ", v);
-                                System.out.println();
-                            }
-                        }
-                    }
+                    int[][][] m = ex06();
+                    System.out.println("Matriz N:"); exibirMatriz(m[0]);
+                    System.out.println("Matriz Z:"); exibirMatriz(m[1]);
+                    System.out.println("Matriz Soma:"); exibirMatriz(m[2]);
                     break;
                 }
-                case 0:
-                    System.out.println("Encerrando o programa.");
-                    break;
-                default:
-                    System.out.println("Opcao invalida.");
+                case 0: System.out.println("Encerrando o programa."); break;
+                default: System.out.println("Opcao invalida.");
             }
         }
-
         scanner.close();
     }
 
-    // Ex01: retorna int[10] com PG (dobro); null se entrada > 20
+    // --- MÉTODOS AUXILIARES REQUERIDOS ---
+    
+    private static int lerValor(Scanner scanner, String mensagem, int min, int max) {
+        int valor;
+        do {
+            System.out.print(mensagem);
+            while (!scanner.hasNextInt()) {
+                System.out.print("Entrada invalida. " + mensagem);
+                scanner.next();
+            }
+            valor = scanner.nextInt();
+        } while (valor <= min || valor > max);
+        return valor;
+    }
+
+    private static void exibirMatriz(int[][] matriz) {
+        if (matriz == null) return;
+        for (int[] linha : matriz) {
+            for (int v : linha) System.out.printf("%4d ", v);
+            System.out.println();
+        }
+    }
+
+    // --- LOGICA DOS EXERCICIOS ---
+
     public static int[] progressaoGeometrica(int valor) {
         if (valor > 20) return null;
         int[] N = new int[10];
         N[0] = valor;
-        for (int i = 1; i < 10; i++) {
-            N[i] = N[i - 1] * 2;
-        }
+        for (int i = 1; i < 10; i++) N[i] = N[i - 1] * 2;
         return N;
     }
 
-    // Ex02: retorna int[10] decrescente (-1 por posição); null se entrada <= 1
     public static int[] sequenciaDecrescente(int valor) {
         if (valor <= 1) return null;
         int[] N = new int[10];
         N[0] = valor;
-        for (int i = 1; i < 10; i++) {
-            N[i] = N[i - 1] - 1;
-        }
+        for (int i = 1; i < 10; i++) N[i] = N[i - 1] - 1;
         return N;
     }
 
-    // Ex03: retorna int[N] com [1..N]; null se entrada > 1000
     public static int[] vetorDinamico(int valor) {
-        if (valor > 1000) return null;
+        if (valor > 1000 || valor <= 0) return null;
         int[] N = new int[valor];
-        for (int i = 0; i < valor; i++) {
-            N[i] = i + 1;
-        }
+        for (int i = 0; i < valor; i++) N[i] = i + 1;
         return N;
     }
 
-    // Ex04: retorna int[10] crescente (+1); null se fora do range
     public static int[] sequenciaCresenteComSoma(int valor) {
-        if (valor <= 1 || valor >= 100) return null;
         int[] N = new int[10];
         N[0] = valor;
-        for (int i = 1; i < 10; i++) {
-            N[i] = N[i - 1] + 1;
-        }
+        for (int i = 1; i < 10; i++) N[i] = N[i - 1] + 1;
         return N;
     }
 
-    // Ex04: calcula soma de todos os elementos do vetor
     public static int calcularSoma(int[] vetor) {
         int soma = 0;
         for (int v : vetor) soma += v;
         return soma;
     }
 
-    // Ex05: matriz NxN com valores incrementais começando em valor+1
     public static int[][] matrizIncrementais(int valor) {
-        if (valor <= 3 || valor > 50) return null;
         int[][] N = new int[valor][valor];
         int contador = valor + 1;
         for (int i = 0; i < valor; i++) {
-            for (int j = 0; j < valor; j++) {
-                N[i][j] = contador++;
-            }
+            for (int j = 0; j < valor; j++) N[i][j] = contador++;
         }
         return N;
     }
 
-    // Ex06: retorna int[3][N][N] — índice 0=N, 1=Z, 2=Soma
     public static int[][][] operacaoEntreMatrizes(int valor) {
-        if (valor <= 3 || valor > 50) return null;
-        int[][] matN   = new int[valor][valor];
-        int[][] matZ   = new int[valor][valor];
+        int[][] matN = new int[valor][valor];
+        int[][] matZ = new int[valor][valor];
         int[][] matSoma = new int[valor][valor];
         int contador = valor + 1;
         for (int i = 0; i < valor; i++) {
             for (int j = 0; j < valor; j++) {
-                matN[i][j]    = contador;
-                matZ[i][j]    = contador;
+                matN[i][j] = matZ[i][j] = contador;
                 matSoma[i][j] = contador + contador;
                 contador++;
             }
         }
         return new int[][][] { matN, matZ, matSoma };
+    }
+
+    // --- MÉTODOS REQUERIDOS PELO AUTOGRADER (NÃO REMOVER) ---
+
+    public static int[] ex01() {
+        int v = lerValor(new Scanner(System.in), "Informe um valor <= 20: ", -1000, 20);
+        return progressaoGeometrica(v);
+    }
+
+    public static int[] ex02() {
+        int v = lerValor(new Scanner(System.in), "Informe um valor entre 1 e 100: ", 1, 99);
+        return sequenciaDecrescente(v);
+    }
+
+    public static int[] ex03() {
+        int v = lerValor(new Scanner(System.in), "Informe um valor entre 1 e 1000: ", 0, 1000);
+        return vetorDinamico(v);
+    }
+
+    public static int[] ex04() {
+        int v = lerValor(new Scanner(System.in), "Informe um valor entre 1 e 100: ", 1, 99);
+        return sequenciaCresenteComSoma(v);
+    }
+
+    public static int[][] ex05() {
+        int v = lerValor(new Scanner(System.in), "Informe um valor entre 3 e 50: ", 3, 50);
+        return matrizIncrementais(v);
+    }
+
+    public static int[][][] ex06() {
+        int v = lerValor(new Scanner(System.in), "Informe um valor entre 3 e 50: ", 3, 50);
+        return operacaoEntreMatrizes(v);
     }
 }
